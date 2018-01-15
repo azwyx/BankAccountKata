@@ -1,10 +1,17 @@
 package amh.kata.bankaccount;
 
+import amh.kata.bankaccount.entities.Compte;
+import amh.kata.bankaccount.entities.Operation;
+import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
+import amh.kata.bankaccount.entities.exceptions.AmountLowerThanBalance;
+import amh.kata.bankaccount.entities.exceptions.AmountMinMaxValueException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
+
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -17,6 +24,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public class BankAccountIntegrationTests {
 
+    @Autowired
     private TestRestTemplate restTemplate;
 
     @Test
@@ -30,11 +38,11 @@ public class BankAccountIntegrationTests {
                 .queryParam("amount", "2400")
                 .queryParam("empCode", "1");
 
-        ResponseEntity<Compte> response = restTemplate.getForObject(builder.toUriString(), Compte.class);
+        ResponseEntity<Compte> response = restTemplate.getForEntity(builder.toUriString(), Compte.class);
         //ResponseEntity<Compte> response = restTemplate.put();t("/deposit", );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getClient.getIdClient()).isEqualTo(1);
+        assertThat(response.getBody().getClient().getIdClient()).isEqualTo(1);
         assertThat(response.getBody().getBalance()).isEqualTo(3400);
     }
 
@@ -49,10 +57,10 @@ public class BankAccountIntegrationTests {
                 .queryParam("amount", "900")
                 .queryParam("empCode", "1");
 
-        ResponseEntity<Compte> response = restTemplate.putgetForObject(builder.toUriString(), Compte.class);
+        ResponseEntity<Compte> response = restTemplate.getForEntity(builder.toUriString(), Compte.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getClient.getIdClient()).isEqualTo(1);
+        assertThat(response.getBody().getClient().getIdClient()).isEqualTo(2);
         assertThat(response.getBody().getBalance()).isEqualTo(3400);
     }
 
@@ -68,15 +76,16 @@ public class BankAccountIntegrationTests {
                 .queryParam("amount", "1200")
                 .queryParam("empCode", "1");
 
-        ResponseEntity<Compte> response = restTemplate.getForObject(builder.toUriString(), Compte.class);
+        ResponseEntity<Compte> response = restTemplate.getForEntity(builder.toUriString(), Compte.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getClient.getIdClient()).isEqualTo(2);
+        assertThat(response.getBody().getClient().getIdClient()).isEqualTo(2);
         assertThat(response.getBody().getBalance()).isEqualTo(400);
     }
 
     @Test
     public void operationsHistory() throws Exception {
+        List<Operation> searchList;
         String transactionUrl = "/history";
 
         UriComponentsBuilder builder = UriComponentsBuilder
@@ -84,10 +93,10 @@ public class BankAccountIntegrationTests {
                 // Add query parameter
                 .queryParam("code", "compte1");
 
-        ResponseEntity<List<Operation>> response = restTemplate.getForObject(builder.toUriString(), Compte.class);
+        ResponseEntity<Operation[]> response = restTemplate.getForEntity(builder.toUriString(), Operation[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().size()).isEqualTo(2);
+        assertThat(response.getBody().length).isEqualTo(2);
 
     }
 }
