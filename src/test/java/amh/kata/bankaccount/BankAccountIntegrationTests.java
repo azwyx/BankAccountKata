@@ -38,11 +38,19 @@ public class BankAccountIntegrationTests {
                 .queryParam("amount", "2400")
                 .queryParam("empCode", "1");
 
-        ResponseEntity<Account> response = restTemplate.getForEntity(builder.toUriString(), Account.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getClient().getIdClient()).isEqualTo(1);
-        assertThat(response.getBody().getBalance()).isEqualTo(3400);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<Account> responsee = restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.PUT,
+                entity,
+                Account.class);
+
+        assertThat(responsee.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responsee.getBody().getClient().getIdClient()).isEqualTo(1);
     }
 
     @Test
@@ -92,7 +100,8 @@ public class BankAccountIntegrationTests {
                 // Add query parameter
                 .queryParam("code", "compte1");
 
-        ResponseEntity<Operation[]> response = restTemplate.getForEntity(builder.toUriString(), Operation[].class);
+        ResponseEntity<Operation[]> response =
+                restTemplate.getForEntity(builder.toUriString(), Operation[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().length).isEqualTo(2);
