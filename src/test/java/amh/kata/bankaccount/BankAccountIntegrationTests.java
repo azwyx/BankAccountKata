@@ -1,6 +1,6 @@
 package amh.kata.bankaccount;
 
-import amh.kata.bankaccount.entities.Compte;
+import amh.kata.bankaccount.entities.Account;
 import amh.kata.bankaccount.entities.Operation;
 import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
 import amh.kata.bankaccount.entities.exceptions.AmountLowerThanBalance;
@@ -38,8 +38,7 @@ public class BankAccountIntegrationTests {
                 .queryParam("amount", "2400")
                 .queryParam("empCode", "1");
 
-        ResponseEntity<Compte> response = restTemplate.getForEntity(builder.toUriString(), Compte.class);
-        //ResponseEntity<Compte> response = restTemplate.put();t("/deposit", );
+        ResponseEntity<Account> response = restTemplate.getForEntity(builder.toUriString(), Account.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getClient().getIdClient()).isEqualTo(1);
@@ -57,7 +56,7 @@ public class BankAccountIntegrationTests {
                 .queryParam("amount", "900")
                 .queryParam("empCode", "1");
 
-        ResponseEntity<Compte> response = restTemplate.getForEntity(builder.toUriString(), Compte.class);
+        ResponseEntity<Account> response = restTemplate.getForEntity(builder.toUriString(), Account.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getClient().getIdClient()).isEqualTo(2);
@@ -76,7 +75,7 @@ public class BankAccountIntegrationTests {
                 .queryParam("amount", "1200")
                 .queryParam("empCode", "1");
 
-        ResponseEntity<Compte> response = restTemplate.getForEntity(builder.toUriString(), Compte.class);
+        ResponseEntity<Account> response = restTemplate.getForEntity(builder.toUriString(), Account.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getClient().getIdClient()).isEqualTo(2);

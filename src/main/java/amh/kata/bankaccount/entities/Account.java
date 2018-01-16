@@ -1,6 +1,6 @@
 package amh.kata.bankaccount.entities;
 
-public class Compte {
+public class Account {
 
     private Client client;
     private Long balance;
