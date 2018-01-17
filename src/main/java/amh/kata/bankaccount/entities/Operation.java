@@ -8,6 +8,9 @@ public class Operation implements Serializable {
     private Long opId;
     private Date dateOperation;
 
+    public Operation() {
+    }
+
     public Long getOpId() {
 
         return opId;
