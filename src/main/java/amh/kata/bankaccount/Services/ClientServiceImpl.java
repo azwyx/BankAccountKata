@@ -1,27 +1,34 @@
 package amh.kata.bankaccount.Services;
 
+import amh.kata.bankaccount.dao.ClientRepository;
 import amh.kata.bankaccount.entities.Client;
 import amh.kata.bankaccount.entities.exceptions.ClientNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ClientServiceImpl implements ClientService{
+public class ClientServiceImpl implements IClientService {
+
+    @Autowired
+    private ClientRepository clientRepository;
 
 
     @Override
     public Client saveClient(Client c) {
-        return null;
+        return clientRepository.save(c);
     }
 
     @Override
     public Client getClient(Long idClient) {
-        return null;
+        Client client = clientRepository.finByIdClient(idClient);
+        if(client == null) throw new ClientNotFoundException("Client Not Found");
+        return client;
     }
 
     @Override
     public List<Client> listClient() {
-        return null;
+        return clientRepository.findAll();
     }
 }

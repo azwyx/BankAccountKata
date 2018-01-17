@@ -1,7 +1,6 @@
 package amh.kata.bankaccount.RestControllers;
 
-import amh.kata.bankaccount.Services.ClientService;
-import amh.kata.bankaccount.Services.ClientServiceImpl;
+import amh.kata.bankaccount.Services.IClientService;
 import amh.kata.bankaccount.entities.Client;
 import amh.kata.bankaccount.entities.exceptions.ClientNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +34,7 @@ public class ClientRestControllerTest {
     private MockMvc mokMvc;
 
     @MockBean
-    private ClientService clientService;
+    private IClientService IClientService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -44,7 +43,7 @@ public class ClientRestControllerTest {
     public void saveClient_ShouldCreateAndReturnClient() throws Exception {
         String json = mapper.writeValueAsString(new Client("Amine", "HARIRI", "azerty", "azertypass"));
 
-        given(clientService.saveClient(anyObject())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
+        given(IClientService.saveClient(anyObject())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
 
         mokMvc.perform(MockMvcRequestBuilders.post("/clients/saveClient")
         .contentType(MediaType.APPLICATION_JSON)
@@ -60,7 +59,7 @@ public class ClientRestControllerTest {
     @Test
     public void getClient_TestSuccess_ShouldReturnClient_() throws Exception {
 
-        given(clientService.getClient(anyLong())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
+        given(IClientService.getClient(anyLong())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
 
         mokMvc.perform(MockMvcRequestBuilders.get("/clients/{idClient}", 1))
                 .andExpect(status().isOk())
@@ -73,7 +72,7 @@ public class ClientRestControllerTest {
     @Test
     public void getClient_TestFail_ShouldReturn_404_Not_Fount_() throws Exception {
 
-        given(clientService.getClient(anyLong())).willThrow(new ClientNotFoundException("mon_msg"));
+        given(IClientService.getClient(anyLong())).willThrow(new ClientNotFoundException("mon_msg"));
 
         mokMvc.perform(MockMvcRequestBuilders.get("/clients/1"))
                 .andExpect(status().isNotFound());
@@ -86,7 +85,7 @@ public class ClientRestControllerTest {
         client_list.add(new Client("Amine", "HARIRI", "azerty", "azertypass"));
         client_list.add(new Client("Reda", "Beggar", "iop123", "owertypass"));
 
-        given(clientService.listClient()).willReturn(client_list);
+        given(IClientService.listClient()).willReturn(client_list);
 
         mokMvc.perform(MockMvcRequestBuilders.get("/clients/list"))
                 .andExpect(status().isOk())
