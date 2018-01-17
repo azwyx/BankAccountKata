@@ -1,6 +1,7 @@
 package amh.kata.bankaccount.Services;
 
 import amh.kata.bankaccount.entities.Client;
+import amh.kata.bankaccount.entities.exceptions.ClientNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public class ClientService {
         return null;
     }
 
-    public Client getClient(Long idClient) {
+    public Client getClient(Long idClient){
         return null;
     }
 
