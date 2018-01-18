@@ -25,6 +25,12 @@ public class ClientRestController {
         return IClientService.getClient(idClient);
     }
 
+    @RequestMapping(value="/clients/delete/{idClient}", method=RequestMethod.GET)
+    public String deleteClient(@PathVariable Long idClient) throws ClientNotFoundException {
+        IClientService.deleteClient(idClient);
+        return "Client by Id "+idClient+" is successfully deleted";
+    }
+
     @RequestMapping(value="/clients/list",method=RequestMethod.GET)
     public List<Client> listClient() {
         return IClientService.listClient();

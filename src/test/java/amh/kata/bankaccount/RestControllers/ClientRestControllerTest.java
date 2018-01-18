@@ -22,6 +22,7 @@ import java.util.List;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,7 +34,7 @@ public class ClientRestControllerTest {
     private MockMvc mokMvc;
 
     @MockBean
-    private IClientService IClientService;
+    private IClientService clientService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -42,7 +43,7 @@ public class ClientRestControllerTest {
     public void saveClient_ShouldCreateAndReturnClient() throws Exception {
         String json = mapper.writeValueAsString(new Client("Amine", "HARIRI", "azerty", "azertypass"));
 
-        given(IClientService.saveClient(anyObject())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
+        given(clientService.saveClient(anyObject())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
 
         mokMvc.perform(MockMvcRequestBuilders.post("/clients/saveClient")
         .contentType(MediaType.APPLICATION_JSON)
@@ -60,7 +61,7 @@ public class ClientRestControllerTest {
 
         Client client = new Client("Amine", "HARIRI", "azerty", "azertypass");
 
-        given(IClientService.getClient(anyLong())).willReturn(client);
+        given(clientService.getClient(anyLong())).willReturn(client);
 
         mokMvc.perform(MockMvcRequestBuilders.get("/clients/{idClient}", 1))
                 .andExpect(status().isOk())
@@ -73,10 +74,32 @@ public class ClientRestControllerTest {
     @Test
     public void getClientDetails_TestFail_ShouldReturn_404_Not_Fount_() throws Exception {
 
-        given(IClientService.getClient(anyLong())).willThrow(new ClientNotFoundException("mon_msg"));
+        given(clientService.getClient(anyLong())).willThrow(new ClientNotFoundException("mon_msg"));
 
-        mokMvc.perform(MockMvcRequestBuilders.get("/clients/1"))
+        mokMvc.perform(MockMvcRequestBuilders.get("/clients/{idClient}", "1"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void deleteClient_TestSucces_ShouldReturn_StringOK_() throws Exception {
+
+        doNothing().when(clientService).deleteClient(anyLong());
+
+        mokMvc.perform(MockMvcRequestBuilders.get("/clients/delete/{idClient}", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("Client by Id 1 is successfully deleted"));
+        verify(clientService, times(1)).deleteClient(anyLong());
+    }
+
+    @Test
+    public void deleteClient_TestFail_ShouldReturn_404_Not_Fount_() throws Exception {
+
+       doThrow(new ClientNotFoundException("Not Found Client")).when(clientService).deleteClient(anyLong());
+
+        mokMvc.perform(MockMvcRequestBuilders.get("/clients/delete/{idClient}", 1))
+                .andExpect(status().isNotFound());
+
+        verify(clientService, times(1)).deleteClient(anyLong());
     }
 
     @Test
@@ -86,7 +109,7 @@ public class ClientRestControllerTest {
         client_list.add(new Client("Amine", "HARIRI", "azerty", "azertypass"));
         client_list.add(new Client("Reda", "Beggar", "iop123", "owertypass"));
 
-        given(IClientService.listClient()).willReturn(client_list);
+        given(clientService.listClient()).willReturn(client_list);
 
         mokMvc.perform(MockMvcRequestBuilders.get("/clients/list"))
                 .andExpect(status().isOk())

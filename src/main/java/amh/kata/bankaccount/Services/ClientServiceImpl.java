@@ -31,4 +31,12 @@ public class ClientServiceImpl implements IClientService {
     public List<Client> listClient() {
         return clientRepository.findAll();
     }
+
+    @Override
+    public void deleteClient(Long idClient) {
+        if(clientRepository.findOne(idClient) == null)
+            throw new ClientNotFoundException("Client Not Found");
+
+        clientRepository.delete(idClient);
+    }
 }

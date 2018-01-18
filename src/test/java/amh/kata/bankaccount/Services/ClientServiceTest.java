@@ -18,12 +18,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClientServiceTest {
 
     @Mock
-    private ClientRepository clientRpository;
+    private ClientRepository clientRepository;
 
     @InjectMocks
     private ClientServiceImpl clientService;
@@ -38,7 +39,7 @@ public class ClientServiceTest {
 
     @Test
     public void saveClient() {
-        given(clientRpository.save(any(Client.class))).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
+        given(clientRepository.save(any(Client.class))).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
 
         Client client = clientService.saveClient(new Client("Amine", "HARIRI", "azerty", "azertypass"));
 
@@ -51,7 +52,7 @@ public class ClientServiceTest {
 
     @Test
     public void getClient() {
-        given(clientRpository.finByIdClient(anyLong())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
+        given(clientRepository.finByIdClient(anyLong())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
 
         Client client = clientService.getClient(Integer.toUnsignedLong(1));
 
@@ -63,9 +64,31 @@ public class ClientServiceTest {
 
     @Test(expected = ClientNotFoundException.class)
     public void getClient_NotFound() {
-        given(clientRpository.finByIdClient(anyLong())).willReturn(null);
+        given(clientRepository.finByIdClient(anyLong())).willReturn(null);
 
         Client client = clientService.getClient(Integer.toUnsignedLong(1));
+    }
+
+    @Test
+    public void deleteClient() {
+        doNothing().when(clientRepository).delete(anyLong());
+        doReturn(new Client()).when(clientRepository).findOne(anyLong());
+
+        clientService.deleteClient((long)1);
+
+        verify(clientRepository, times(1)).findOne(anyLong());
+        verify(clientRepository, times(1)).delete(anyLong());
+
+    }
+
+    @Test(expected = ClientNotFoundException.class)
+    public void deleteClient_NotFound() {
+        doThrow(new ClientNotFoundException("Not Found Client")).when(clientRepository).delete(anyLong());
+
+        clientService.deleteClient((long)1);
+
+        verify(clientRepository, atLeastOnce()).findOne((long) 1);
+        verify(clientRepository, atLeastOnce()).delete((long) 2);
     }
 
     @Test
@@ -74,7 +97,7 @@ public class ClientServiceTest {
         list_client.add(new Client("Amine", "HARIRI", "azerty", "azertypass"));
         list_client.add(new Client("Reda", "BEGGAR", "qwerty", "qwertypass"));
 
-        given(clientRpository.findAll()).willReturn(list_client);
+        given(clientRepository.findAll()).willReturn(list_client);
 
         List<Client> rslt_list_clientClient = clientService.listClient();
 
