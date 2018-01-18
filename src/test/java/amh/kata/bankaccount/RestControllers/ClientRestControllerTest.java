@@ -22,7 +22,6 @@ import java.util.List;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,9 +56,11 @@ public class ClientRestControllerTest {
     }
 
     @Test
-    public void getClient_TestSuccess_ShouldReturnClient_() throws Exception {
+    public void getClientDetails_TestSuccess_ShouldReturnClient_() throws Exception {
 
-        given(IClientService.getClient(anyLong())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
+        Client client = new Client("Amine", "HARIRI", "azerty", "azertypass");
+
+        given(IClientService.getClient(anyLong())).willReturn(client);
 
         mokMvc.perform(MockMvcRequestBuilders.get("/clients/{idClient}", 1))
                 .andExpect(status().isOk())
@@ -70,7 +71,7 @@ public class ClientRestControllerTest {
     }
 
     @Test
-    public void getClient_TestFail_ShouldReturn_404_Not_Fount_() throws Exception {
+    public void getClientDetails_TestFail_ShouldReturn_404_Not_Fount_() throws Exception {
 
         given(IClientService.getClient(anyLong())).willThrow(new ClientNotFoundException("mon_msg"));
 

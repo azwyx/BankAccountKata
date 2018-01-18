@@ -1,6 +1,10 @@
 package amh.kata.bankaccount.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import java.io.Serializable;
+import java.util.Collection;
 
 public class Client implements Serializable{
     private Long idClient;
@@ -8,6 +12,7 @@ public class Client implements Serializable{
     private String lastname;
     private String login;
     private String password;
+    private Collection<Account> accounts;
 
     public Client() {
     }
@@ -59,5 +64,15 @@ public class Client implements Serializable{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @JsonIgnore
+    public Collection<Account> getAccounts() {
+        return accounts;
+    }
+
+    @JsonSetter
+    public void setAccounts(Collection<Account> accounts) {
+        this.accounts = accounts;
     }
 }
