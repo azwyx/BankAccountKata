@@ -1,13 +1,11 @@
 package amh.kata.bankaccount.RestControllers;
 
-import amh.kata.bankaccount.Services.AccountService;
+import amh.kata.bankaccount.Services.IAccountService;
 import amh.kata.bankaccount.entities.Account;
 import amh.kata.bankaccount.entities.Client;
-import amh.kata.bankaccount.entities.Employe;
 import amh.kata.bankaccount.entities.exceptions.AccountAlreadyExistException;
 import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
 import amh.kata.bankaccount.entities.exceptions.ClientNotFoundException;
-import amh.kata.bankaccount.entities.exceptions.EmployeNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -29,6 +27,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,14 +40,12 @@ public class AccountRestControllerTest {
     private MockMvc mokMvc;
 
     @MockBean
-    private AccountService accountService;
+    private IAccountService accountService;
 
     @Autowired
     private ObjectMapper mapper;
 
     Client client;
-    Employe employe_1;
-    Employe employe_2;
     Account account_1;
     Account account_2;
     List<Account> account_list;
@@ -54,10 +53,8 @@ public class AccountRestControllerTest {
     @Before
     public void setUp() throws Exception {
         client = new Client("HARIRI", "Amine", "azerty", "azertypass");
-        employe_1 = new Employe((long) 3, "Steve");
-        employe_1 = new Employe((long) 5, "John");
-        account_1 = new Account("account_1", new Date(), client, employe_1);
-        account_2 = new Account("account_2", new Date(), client, employe_2);
+        account_1 = new Account("account_1", new Date(), client);
+        account_2 = new Account("account_2", new Date(), client);
         account_list= new ArrayList<Account>();
         account_list.add(account_1);
         account_list.add(account_2);
@@ -69,14 +66,13 @@ public class AccountRestControllerTest {
 
         given(accountService.saveAccount(anyObject())).willReturn(account_1);
 
-        mokMvc.perform(MockMvcRequestBuilders.post("/account/saveAccount")
+        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/saveAccount")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("codeAccount").value("account_1"))
-                .andExpect(jsonPath("client.firstname").value("HARIRI"))
-                .andExpect(jsonPath("employe.idEmploye").value((long)3));
+                .andExpect(jsonPath("accountCode").value("account_1"))
+                .andExpect(jsonPath("client.firstname").value("HARIRI"));
 
     }
     // creer un compte echoue ( id existant )
@@ -85,7 +81,7 @@ public class AccountRestControllerTest {
         String json = mapper.writeValueAsString(account_1);
         given(accountService.saveAccount(anyObject())).willThrow(new AccountAlreadyExistException("Account by this code already exist"));
 
-        mokMvc.perform(MockMvcRequestBuilders.post("/account/saveAccount")
+        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/saveAccount")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
                 .accept(MediaType.APPLICATION_JSON))
@@ -98,9 +94,8 @@ public class AccountRestControllerTest {
 
         mokMvc.perform(MockMvcRequestBuilders.get("/accounts/accountDetails/{accountCode}", "account_1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("codeAccount").value("account_1"))
-                .andExpect(jsonPath("client.firstname").value("HARIRI"))
-                .andExpect(jsonPath("employe.idEmploye").value((long)3));
+                .andExpect(jsonPath("accountCode").value("account_1"))
+                .andExpect(jsonPath("client.firstname").value("HARIRI"));
     }
     // consulter un compteDetails FAIL (inexistant)
     @Test
@@ -119,12 +114,10 @@ public class AccountRestControllerTest {
 
         mokMvc.perform(MockMvcRequestBuilders.get("/accounts/clientAccounts/{idClient}", 1))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("account[0].codeAccount").value(account_list.get(0).getAccountCode()))
-                .andExpect(jsonPath("account[0].client.firstname").value(account_list.get(0).getClient().getFirstname()))
-                .andExpect(jsonPath("account[0].employe.idEmploye").value(account_list.get(0).getEmploye().getIdEmploye()))
-                .andExpect(jsonPath("account[1].codeAccount").value(account_list.get(1).getAccountCode()))
-                .andExpect(jsonPath("account[1].client.firstname").value(account_list.get(1).getClient().getFirstname()))
-                .andExpect(jsonPath("account[1].employe.idEmploye").value(account_list.get(1).getEmploye().getIdEmploye()));
+                .andExpect(jsonPath("$.[0].accountCode").value(account_list.get(0).getAccountCode()))
+                .andExpect(jsonPath("$.[0].client.firstname").value(account_list.get(0).getClient().getFirstname()))
+                .andExpect(jsonPath("$.[1].accountCode").value(account_list.get(1).getAccountCode()))
+                .andExpect(jsonPath("$.[1].client.firstname").value(account_list.get(1).getClient().getFirstname()));
     }
     // voir list des compte echoue car le client n'a pas de compte
     @Test
@@ -142,31 +135,7 @@ public class AccountRestControllerTest {
         mokMvc.perform(MockMvcRequestBuilders.get("/accounts/clientAccounts/{idClient}", 7))
                 .andExpect(status().isNotFound());
     }
-    // voir liste des compte crées par un employe
-    @Test
-    public void getAccountsCreatedByEmpl_TestSuccess_ShouldReturnAccountList() throws Exception {
-        List<Account> test_list = new ArrayList<Account>();
-        test_list.add(account_1);
-        given(accountService.getAccountsCreatedByEmpl(anyLong())).willReturn(test_list);
 
-        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/accountsCreatedByEmpl/{idEmploye}", 3))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("account[0].codeAccount").value(account_list.get(0).getAccountCode()))
-                .andExpect(jsonPath("account[0].client.firstname").value(account_list.get(0).getClient().getFirstname()))
-                .andExpect(jsonPath("account[0].employe.idEmploye").value(account_list.get(0).getEmploye().getIdEmploye()))
-                .andExpect(jsonPath("account[1].codeAccount").value(account_list.get(1).getAccountCode()))
-                .andExpect(jsonPath("account[1].client.firstname").value(account_list.get(1).getClient().getFirstname()))
-                .andExpect(jsonPath("account[1].employe.idEmploye").value(account_list.get(1).getEmploye().getIdEmploye()));
-    }
-
-    // voir liste des compte crées par un employe
-    @Test
-    public void getAccountsCreatedByEmpl_TestFail_ShouldReturnEmployeNotFoundException() throws Exception {
-        given(accountService.getAccountsCreatedByEmpl(anyLong())).willThrow(new EmployeNotFoundException("Employe Not Found"));
-
-        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/accountsCreatedByEmpl/{idEmploye}", 7))
-                .andExpect(status().isNotFound());
-    }
     // voir list des comptes
     @Test
     public void getAccountList_TestSuccess_ShouldReturnAccountList() throws Exception {
@@ -175,11 +144,32 @@ public class AccountRestControllerTest {
         mokMvc.perform(MockMvcRequestBuilders.get("/accounts/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", Matchers.hasSize(2)))
-                .andExpect(jsonPath("account[0].codeAccount").value(account_list.get(0).getAccountCode()))
-                .andExpect(jsonPath("account[0].client.firstname").value(account_list.get(0).getClient().getFirstname()))
-                .andExpect(jsonPath("account[0].employe.idEmploye").value(account_list.get(0).getEmploye().getIdEmploye()))
-                .andExpect(jsonPath("account[1].codeAccount").value(account_list.get(1).getAccountCode()))
-                .andExpect(jsonPath("account[1].client.firstname").value(account_list.get(1).getClient().getFirstname()))
-                .andExpect(jsonPath("account[1].employe.idEmploye").value(account_list.get(1).getEmploye().getIdEmploye()));
+                .andExpect(jsonPath("$.[0].accountCode").value(account_list.get(0).getAccountCode()))
+                .andExpect(jsonPath("$.[0].client.firstname").value(account_list.get(0).getClient().getFirstname()))
+                .andExpect(jsonPath("$.[1].accountCode").value(account_list.get(1).getAccountCode()))
+                .andExpect(jsonPath("$.[1].client.firstname").value(account_list.get(1).getClient().getFirstname()));
     }
+
+    @Test
+    public void deleteAccount_TestSucces_ShouldReturn_StringOK() throws Exception {
+
+        doNothing().when(accountService).deleteAccount(anyString());
+
+        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/delete/{accountCode}", "account_1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("Account by code account_1 is successfully deleted"));
+        verify(accountService, times(1)).deleteAccount(anyString());
+    }
+
+    @Test
+    public void deleteClient_TestFail_ShouldReturn_404_Not_Found() throws Exception {
+
+        doThrow(new AccountNotFoundException("Account Not Found")).when(accountService).deleteAccount(anyString());
+
+        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/delete/{accountCode}", "account_1"))
+                .andExpect(status().isNotFound());
+
+        verify(accountService, times(1)).deleteAccount(anyString());
+    }
+
 }

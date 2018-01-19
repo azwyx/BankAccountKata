@@ -7,26 +7,31 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AccountService {
+public class AccountServiceImpl implements IAccountService{
 
+
+    @Override
     public Account saveAccount(Account account) {
         return null;
     }
 
-
+    @Override
     public Account getAccount(String accountCode) {
         return null;
     }
 
+    @Override
     public List<Account> getClientAccounts(long idClient) {
         return null;
     }
 
-    public List<Account> getAccountsCreatedByEmpl(long idEmploye) {
+    @Override
+    public List<Account> getAllAccounts() {
         return null;
     }
 
-    public List<Account> getAllAccounts() {
-        return null;
+    @Override
+    public void deleteAccount(String accountCode) {
+
     }
 }

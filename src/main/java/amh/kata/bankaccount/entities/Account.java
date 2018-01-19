@@ -12,26 +12,26 @@ public class Account {
     private Date dateCreation;
     private double balance;
     private Client client;
-    private Employe employe;
     private Collection<Operation> operations;
+
+    public Account() {
+    }
 
     public Account(String accountCode) {
         this.accountCode = accountCode;
     }
 
-    public Account(String accountCode, Date dateCreation, Client client, Employe employe) {
+    public Account(String accountCode, Date dateCreation, Client client) {
         this.accountCode = accountCode;
         dateCreation = dateCreation;
         this.client = client;
-        this.employe = employe;
     }
 
-    public Account(String accountCode, Date dateCreation, double balance, Client client, Employe employe, Collection<Operation> operations) {
+    public Account(String accountCode, Date dateCreation, double balance, Client client, Collection<Operation> operations) {
         this.accountCode = accountCode;
         dateCreation = dateCreation;
         this.balance = balance;
         this.client = client;
-        this.employe = employe;
         this.operations = operations;
     }
 
@@ -65,14 +65,6 @@ public class Account {
 
     public void setClient(Client client) {
         this.client = client;
-    }
-
-    public Employe getEmploye() {
-        return employe;
-    }
-
-    public void setEmploye(Employe employe) {
-        this.employe = employe;
     }
 
     @JsonIgnore
