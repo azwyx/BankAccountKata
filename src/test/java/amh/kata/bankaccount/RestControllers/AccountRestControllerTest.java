@@ -9,6 +9,7 @@ import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
 import amh.kata.bankaccount.entities.exceptions.ClientNotFoundException;
 import amh.kata.bankaccount.entities.exceptions.EmployeNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -173,7 +174,7 @@ public class AccountRestControllerTest {
 
         mokMvc.perform(MockMvcRequestBuilders.get("/accounts/all"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("account.length()").value(2))
+                .andExpect(jsonPath("$", Matchers.hasSize(2)))
                 .andExpect(jsonPath("account[0].codeAccount").value(account_list.get(0).getAccountCode()))
                 .andExpect(jsonPath("account[0].client.firstname").value(account_list.get(0).getClient().getFirstname()))
                 .andExpect(jsonPath("account[0].employe.idEmploye").value(account_list.get(0).getEmploye().getIdEmploye()))
