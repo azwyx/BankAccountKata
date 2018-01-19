@@ -3,7 +3,7 @@ package amh.kata.bankaccount;
 import amh.kata.bankaccount.entities.Account;
 import amh.kata.bankaccount.entities.Operation;
 import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
-import amh.kata.bankaccount.entities.exceptions.AmountLowerThanBalance;
+import amh.kata.bankaccount.entities.exceptions.AmountLowerThanBalanceException;
 import amh.kata.bankaccount.entities.exceptions.AmountMinMaxValueException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +28,7 @@ public class BankAccountIntegrationTests {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void withDrawalSuccessTest() throws AccountNotFoundException, AmountLowerThanBalance, AmountMinMaxValueException {
+    public void withDrawalSuccessTest() throws AccountNotFoundException, AmountLowerThanBalanceException, AmountMinMaxValueException {
         String transactionUrl = "/withdraw";
 
         UriComponentsBuilder builder = UriComponentsBuilder

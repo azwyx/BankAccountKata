@@ -57,7 +57,7 @@ public class ClientRestControllerTest {
     }
 
     @Test
-    public void getClientDetails_TestSuccess_ShouldReturnClient_() throws Exception {
+    public void getClientDetails_TestSuccess_ShouldReturnClient() throws Exception {
 
         Client client = new Client("Amine", "HARIRI", "azerty", "azertypass");
 
@@ -72,16 +72,16 @@ public class ClientRestControllerTest {
     }
 
     @Test
-    public void getClientDetails_TestFail_ShouldReturn_404_Not_Fount_() throws Exception {
+    public void getClientDetails_TestFail_ShouldReturn_404_Not_Found() throws Exception {
 
-        given(clientService.getClient(anyLong())).willThrow(new ClientNotFoundException("mon_msg"));
+        given(clientService.getClient(anyLong())).willThrow(new ClientNotFoundException("Client Not Found"));
 
         mokMvc.perform(MockMvcRequestBuilders.get("/clients/{idClient}", "1"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void deleteClient_TestSucces_ShouldReturn_StringOK_() throws Exception {
+    public void deleteClient_TestSucces_ShouldReturn_StringOK() throws Exception {
 
         doNothing().when(clientService).deleteClient(anyLong());
 
@@ -92,7 +92,7 @@ public class ClientRestControllerTest {
     }
 
     @Test
-    public void deleteClient_TestFail_ShouldReturn_404_Not_Fount_() throws Exception {
+    public void deleteClient_TestFail_ShouldReturn_404_Not_Found() throws Exception {
 
        doThrow(new ClientNotFoundException("Not Found Client")).when(clientService).deleteClient(anyLong());
 

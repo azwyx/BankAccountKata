@@ -14,7 +14,6 @@ public class ClientServiceImpl implements IClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-
     @Override
     public Client saveClient(Client c) {
         return clientRepository.save(c);
