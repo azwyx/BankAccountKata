@@ -23,6 +23,11 @@ public class AccountRestController {
         return accountService.saveAccount(account);
     }
 
+    @RequestMapping(value="/accounts/updateAccount",method= RequestMethod.POST)
+    public Account upadteAccount(@RequestBody Account account) {
+        return accountService.saveAccount(account);
+    }
+
     @RequestMapping(value="/accounts/accountDetails/{accountCode}",method=RequestMethod.GET)
     public Account getAccount(@PathVariable String accountCode) {
         return accountService.getAccount(accountCode);

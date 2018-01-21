@@ -75,7 +75,7 @@ public class AccountRestControllerTest {
                 .andExpect(jsonPath("client.firstname").value("HARIRI"));
 
     }
-    // creer un compte echoue ( id existant )
+    // creer un compte echoue ( id inexistant )
     @Test
     public void createAccount_TestFail_ShouldReturnAlreadyExistException() throws Exception {
         String json = mapper.writeValueAsString(account_1);
@@ -87,6 +87,35 @@ public class AccountRestControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAlreadyReported());
     }
+
+    @Test
+    public void updateAccount_TestSuccess_ShouldReturnUpdatedAccount() throws Exception {
+        String json = mapper.writeValueAsString(account_1);
+
+        given(accountService.saveAccount(anyObject())).willReturn(account_1);
+
+        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/updateAccount")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("accountCode").value("account_1"))
+                .andExpect(jsonPath("client.firstname").value("HARIRI"));
+
+    }
+    // mise à jour d'un compte echoue ( id inexistant )
+    @Test
+    public void updateAccount_TestFail_ShouldReturnNotFoundException() throws Exception {
+        String json = mapper.writeValueAsString(account_1);
+        given(accountService.saveAccount(anyObject())).willThrow(new AccountNotFoundException("Account Not Found"));
+
+        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/updateAccount")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
     // consulter un compteDetails avec succes ( compte existant )
     @Test
     public void getAccountDetails_TestSuccess_ShouldReturnAccount() throws Exception {

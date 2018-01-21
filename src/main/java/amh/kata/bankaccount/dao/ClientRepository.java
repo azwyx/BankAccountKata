@@ -4,5 +4,5 @@ import amh.kata.bankaccount.entities.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClientRepository extends JpaRepository<Client, Long>{
-    Client finByIdClient(Long idClient);
+    Client findByIdClient(Long idClient);
 }

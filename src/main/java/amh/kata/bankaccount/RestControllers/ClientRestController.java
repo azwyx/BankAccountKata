@@ -1,7 +1,6 @@
 package amh.kata.bankaccount.RestControllers;
 
 import amh.kata.bankaccount.Services.IClientService;
-import amh.kata.bankaccount.dao.ClientRepository;
 import amh.kata.bankaccount.entities.Client;
 import amh.kata.bankaccount.entities.exceptions.ClientNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,6 @@ public class ClientRestController {
 
     @Autowired
     private IClientService clientService;
-
-    @Autowired
-    private ClientRepository clientRepository;
 
     @RequestMapping(value="/clients/saveClient",  method= RequestMethod.POST)
     public Client saveClient(@RequestBody Client c) {

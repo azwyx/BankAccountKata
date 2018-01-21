@@ -52,7 +52,7 @@ public class ClientServiceTest {
 
     @Test
     public void getClient() {
-        given(clientRepository.finByIdClient(anyLong())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
+        given(clientRepository.findByIdClient(anyLong())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
 
         Client client = clientService.getClient(Integer.toUnsignedLong(1));
 
@@ -64,15 +64,15 @@ public class ClientServiceTest {
 
     @Test(expected = ClientNotFoundException.class)
     public void getClient_NotFound() {
-        given(clientRepository.finByIdClient(anyLong())).willReturn(null);
+        given(clientRepository.findByIdClient(anyLong())).willReturn(null);
 
         Client client = clientService.getClient(Integer.toUnsignedLong(1));
     }
 
     @Test
     public void deleteClient() {
-        doNothing().when(clientRepository).delete(anyLong());
         doReturn(new Client()).when(clientRepository).findOne(anyLong());
+        doNothing().when(clientRepository).delete(anyLong());
 
         clientService.deleteClient((long)1);
 
@@ -83,12 +83,8 @@ public class ClientServiceTest {
 
     @Test(expected = ClientNotFoundException.class)
     public void deleteClient_NotFound() {
-        doThrow(new ClientNotFoundException("Not Found Client")).when(clientRepository).delete(anyLong());
-
+        doReturn(null).when(clientRepository).findOne(anyLong());
         clientService.deleteClient((long)1);
-
-        verify(clientRepository, atLeastOnce()).findOne((long) 1);
-        verify(clientRepository, atLeastOnce()).delete((long) 2);
     }
 
     @Test

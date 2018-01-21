@@ -3,10 +3,11 @@ package amh.kata.bankaccount.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
-public class Account {
+public class Account implements Serializable{
 
     private String accountCode;
     private Date dateCreation;

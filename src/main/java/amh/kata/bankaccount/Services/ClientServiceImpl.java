@@ -21,7 +21,7 @@ public class ClientServiceImpl implements IClientService {
 
     @Override
     public Client getClient(Long idClient) {
-        Client client = clientRepository.finByIdClient(idClient);
+        Client client = clientRepository.findByIdClient(idClient);
         if(client == null) throw new ClientNotFoundException("Client Not Found");
         return client;
     }
@@ -32,7 +32,7 @@ public class ClientServiceImpl implements IClientService {
     }
 
     @Override
-    public void deleteClient(Long idClient) {
+    public void deleteClient(Long idClient) throws ClientNotFoundException{
         if(clientRepository.findOne(idClient) == null)
             throw new ClientNotFoundException("Client Not Found");
 
