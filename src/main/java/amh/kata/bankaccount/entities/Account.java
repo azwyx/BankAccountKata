@@ -28,12 +28,11 @@ public class Account implements Serializable{
         this.client = client;
     }
 
-    public Account(String accountCode, Date dateCreation, double balance, Client client, Collection<Operation> operations) {
+    public Account(String accountCode, Date dateCreation, double balance, Client client) {
         this.accountCode = accountCode;
         dateCreation = dateCreation;
         this.balance = balance;
         this.client = client;
-        this.operations = operations;
     }
 
     public String getAccountCode() {
