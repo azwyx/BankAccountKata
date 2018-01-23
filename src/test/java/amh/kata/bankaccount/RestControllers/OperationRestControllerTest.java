@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

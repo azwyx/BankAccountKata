@@ -9,32 +9,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
 public class OperationRestController {
+
     @Autowired
     private OperationService operationService;
 
     @RequestMapping(value="/operations/deposit",method= RequestMethod.POST)
     public Operation deposit(@RequestBody OperationRequest opRequest) {
-        return null;
+        return operationService.deposit(opRequest);
     }
 
     @RequestMapping(value="/operations/withdrawal",method= RequestMethod.POST)
     public Operation withdrawal(@RequestBody OperationRequest opRequest) {
-        return null;
+        return operationService.withdrawal(opRequest);
     }
 
     @RequestMapping(value="/operations/transfer",method= RequestMethod.POST)
     public Operation transfer(@RequestBody OperationRequest opRequest) {
-        return null;
+        return operationService.transfer(opRequest);
     }
 
     @RequestMapping(value="/operations/transferHistory/{accountCode}",method= RequestMethod.GET)
     public List<Transfer> transferHistory(@PathVariable String accountCode) {
-        return null;
+        return operationService.transferHistory(accountCode);
     }
 
     @ExceptionHandler
