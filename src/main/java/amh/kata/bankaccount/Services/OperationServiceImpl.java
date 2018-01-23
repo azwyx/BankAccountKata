@@ -28,13 +28,13 @@ public class OperationServiceImpl implements IOperationService{
     private static final Logger logger = Logger.getLogger("MyLog");
     private static final double MIN_VALUE = 0;
     private static final double MAX_VALUE = 999999999;
-    private static final String TYPE = "T";
+    private static final String TRANSFER_TYPE = "T";
 
     @Override
     public Operation deposit(OperationRequest operationRequest) {
         Account account = accountService.getAccount(operationRequest.getAccountCode());
         double amount = operationRequest.getAmount();
-        if (amount <= MIN_VALUE || amount > MAX_VALUE)
+        if (amount <= MIN_VALUE || amount >= MAX_VALUE)
             throw new AmountMinMaxValueException("Please enter a valid amount");
 
         // if the amount is valid, let's do the operation
@@ -45,7 +45,7 @@ public class OperationServiceImpl implements IOperationService{
         operation.setDateOperation(new Date());
         operation.setAccount(account);
 
-        logger.info("deposit : " + account.toString() + " | amount : " + amount);
+        logger.info("deposit : account " + account.getAccountCode() + " | amount : " + amount);
 
         return operationRepository.save(operation);
     }
@@ -55,14 +55,14 @@ public class OperationServiceImpl implements IOperationService{
         Account account = accountService.getAccount(operationRequest.getAccountCode());
         double amount = operationRequest.getAmount();
 
+        // the amount should be positive
+        if (amount <= MIN_VALUE || amount >= MAX_VALUE)
+            throw new AmountMinMaxValueException(
+                    "Please enter a valid amount");
+
         // the amount should be lower than account's balance
         if (amount > account.getBalance())
             throw new AmountLowerThanBalanceException("Please introduce an amount lower than your balance : <"  + account.getBalance());
-
-        // the amount should be positive
-        if (amount <= MIN_VALUE || amount > MAX_VALUE)
-            throw new AmountMinMaxValueException(
-                    "Please enter a valid amount");
 
         // if the amount is valid, let's do the operation
         Operation operation = new Operation();
@@ -73,7 +73,7 @@ public class OperationServiceImpl implements IOperationService{
         operation.setAccount(account);
 
         // save operation in account history
-        logger.info("withdraw : " + account.toString() + " | amount : " + amount);
+        logger.info("withdraw : account " + account.getAccountCode() + " | amount : " + amount);
         return operationRepository.save(operation);
     }
 
@@ -83,19 +83,19 @@ public class OperationServiceImpl implements IOperationService{
         double amount = operationRequest.getAmount();
         Account toAccount = accountService.getAccount(operationRequest.getToAccountCode());
 
+        // the amount should be positive
+        if (amount <= MIN_VALUE || amount >= MAX_VALUE)
+            throw new AmountMinMaxValueException(
+                    "Please enter a valid amount");
+
         // the amount should be lower than account's balance
         if (amount > account.getBalance())
             throw new AmountLowerThanBalanceException("Please introduce an amount lower than your balance : <"  + account.getBalance());
 
-        // the amount should be positive
-        if (amount <= MIN_VALUE || amount > MAX_VALUE)
-            throw new AmountMinMaxValueException(
-                    "Please enter a valid amount");
-
         // if the amount is valid, let's do the operation
         Transfer optransfer = new Transfer();
         account.setBalance(account.getBalance() - amount);
-        toAccount.setBalance(account.getBalance() + amount);
+        toAccount.setBalance(toAccount.getBalance() + amount);
 
         optransfer.setAmount(amount);
         optransfer.setDateOperation(new Date());
@@ -110,6 +110,7 @@ public class OperationServiceImpl implements IOperationService{
 
     @Override
     public List<Transfer> transferHistory(String accountCode) {
-        return operationRepository.findByTypeAndAccount(TYPE, accountCode);
+        return operationRepository.findByTypeAndAccount(TRANSFER_TYPE,
+                accountService.getAccount(accountCode).getAccountCode());
     }
 }
