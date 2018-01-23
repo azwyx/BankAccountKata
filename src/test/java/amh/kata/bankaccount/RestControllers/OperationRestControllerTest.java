@@ -38,11 +38,12 @@ public class OperationRestControllerTest{
     @MockBean
     private OperationService operationService;
 
-    @MockBean
-    private IAccountService accountService;
-
     @Autowired
     private ObjectMapper mapper;
+
+    private static final double MIN_VALUE = 0;
+    private static final double MAX_VALUE = 999999999;
+    private static final String TYPE = "T";
 
     private Client client;
     private Account account_1;
@@ -65,9 +66,9 @@ public class OperationRestControllerTest{
         opDeposit.setAccount(account_1);
 
         opWithdrawal = new Withdrawal();
-        opDeposit.setDateOperation(new Date());
-        opDeposit.setAmount(700);
-        opDeposit.setAccount(account_2);
+        opWithdrawal.setDateOperation(new Date());
+        opWithdrawal.setAmount(700);
+        opWithdrawal.setAccount(account_2);
 
         opTransfer = new Transfer();
         opTransfer.setDateOperation(new Date());
@@ -111,7 +112,7 @@ public class OperationRestControllerTest{
 
     @Test
     public void deposit_ShoulReturnAmountMinMaxValueException() throws Exception {
-        OperationRequest opRequest = new OperationRequest("account_1", 800);
+        OperationRequest opRequest = new OperationRequest("account_1", MIN_VALUE);
         String jsonRequest = mapper.writeValueAsString(opRequest);
 
         given(operationService.deposit(anyObject())).willThrow(new AmountMinMaxValueException("Bad Request ! amount's value is not valid"));
@@ -156,7 +157,7 @@ public class OperationRestControllerTest{
 
     @Test
     public void withrawal_ShoulReturnAmountMinMaxValueException() throws Exception {
-        OperationRequest opRequest = new OperationRequest("account_2", 700);
+        OperationRequest opRequest = new OperationRequest("account_2", MAX_VALUE);
         String jsonRequest = mapper.writeValueAsString(opRequest);
 
         given(operationService.withdrawal(anyObject())).willThrow(new AmountMinMaxValueException("Bad Request ! amount's value is not valid"));
@@ -170,7 +171,7 @@ public class OperationRestControllerTest{
 
     @Test
     public void withrawal_ShoulReturnAmountLowerThanBalance() throws Exception {
-        OperationRequest opRequest = new OperationRequest("account_2", 700);
+        OperationRequest opRequest = new OperationRequest("account_2", 4000);
         String jsonRequest = mapper.writeValueAsString(opRequest);
 
         given(operationService.withdrawal(anyObject())).willThrow(new AmountMinMaxValueException("Bad Request ! amount's value is lower than balance"));
@@ -194,9 +195,9 @@ public class OperationRestControllerTest{
                 .content(jsonRequest)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("amount").value(700))
+                .andExpect(jsonPath("amount").value(500))
                 .andExpect(jsonPath("account.accountCode").value("account_1"))
-                .andExpect(jsonPath("account.balance").value(3000))
+                .andExpect(jsonPath("account.balance").value(2000))
                 .andExpect(jsonPath("toAccount.accountCode").value("account_2"))
                 .andExpect(jsonPath("toAccount.balance").value(3000));
     }
@@ -213,6 +214,34 @@ public class OperationRestControllerTest{
                 .content(jsonRequest)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void Transfer_ShouldReturnAmountMinMaxValueException() throws Exception {
+        OperationRequest opRequest = new OperationRequest("account_1", MIN_VALUE, "account_2");
+        String jsonRequest = mapper.writeValueAsString(opRequest);
+
+        given(operationService.transfer(anyObject())).willThrow(new AmountMinMaxValueException("Bad Request ! amount's value is not valid"));
+
+        mokMvc.perform(MockMvcRequestBuilders.post("/operations/transfer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void Transfer_ShouldReturnAmountLowerThanBalance() throws Exception {
+        OperationRequest opRequest = new OperationRequest("account_1", 5000, "account_2");
+        String jsonRequest = mapper.writeValueAsString(opRequest);
+
+        given(operationService.transfer(anyObject())).willThrow(new AmountMinMaxValueException("Bad Request ! amount's value is lower than balance"));
+
+        mokMvc.perform(MockMvcRequestBuilders.post("/operations/transfer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

@@ -4,6 +4,8 @@ import amh.kata.bankaccount.Services.OperationService;
 import amh.kata.bankaccount.entities.Operation;
 import amh.kata.bankaccount.entities.Transfer;
 import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
+import amh.kata.bankaccount.entities.exceptions.AmountLowerThanBalanceException;
+import amh.kata.bankaccount.entities.exceptions.AmountMinMaxValueException;
 import amh.kata.bankaccount.tools.OperationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +30,7 @@ public class OperationRestController {
     }
 
     @RequestMapping(value="/operations/transfer",method= RequestMethod.POST)
-    public Operation transfer(@RequestBody OperationRequest opRequest) {
+    public Transfer transfer(@RequestBody OperationRequest opRequest) {
         return operationService.transfer(opRequest);
     }
 
@@ -45,13 +47,13 @@ public class OperationRestController {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private void AmountMinMaxValueHandler(AccountNotFoundException e){
+    private void AmountMinMaxValueHandler(AmountMinMaxValueException e){
 
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private void AmountLowerThanHandler(AccountNotFoundException e){
+    private void AmountLowerThanHandler(AmountLowerThanBalanceException e){
 
     }
 }

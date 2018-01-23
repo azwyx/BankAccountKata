@@ -3,7 +3,6 @@ package amh.kata.bankaccount.tools;
 public class OperationRequest {
     private String accountCode;
     private double amount;
-
     private String toAccountCode;
 
     public OperationRequest() {
