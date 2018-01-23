@@ -79,8 +79,6 @@ public class OperationRestControllerTest{
 
     @Test
     public void deposit_ShouldReturnCreatedOperation() throws Exception {
-
-
         OperationRequest opRequest = new OperationRequest("account_1", 800);
         String jsonRequest = mapper.writeValueAsString(opRequest);
 
