@@ -1,6 +1,6 @@
 package amh.kata.bankaccount.RestControllers;
 
-import amh.kata.bankaccount.Services.OperationService;
+import amh.kata.bankaccount.Services.OperationServiceImpl;
 import amh.kata.bankaccount.entities.Operation;
 import amh.kata.bankaccount.entities.Transfer;
 import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
@@ -17,7 +17,7 @@ import java.util.List;
 public class OperationRestController {
 
     @Autowired
-    private OperationService operationService;
+    private OperationServiceImpl operationService;
 
     @RequestMapping(value="/operations/deposit",method= RequestMethod.POST)
     public Operation deposit(@RequestBody OperationRequest opRequest) {

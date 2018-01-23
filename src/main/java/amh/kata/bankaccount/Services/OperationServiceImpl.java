@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Service
-public class OperationService {
+public class OperationServiceImpl implements IOperationService{
 
     @Autowired
     private IAccountService accountService;
@@ -30,6 +30,7 @@ public class OperationService {
     private static final double MAX_VALUE = 999999999;
     private static final String TYPE = "T";
 
+    @Override
     public Operation deposit(OperationRequest operationRequest) {
         Account account = accountService.getAccount(operationRequest.getAccountCode());
         double amount = operationRequest.getAmount();
@@ -49,6 +50,7 @@ public class OperationService {
         return operationRepository.save(operation);
     }
 
+    @Override
     public Operation withdrawal(OperationRequest operationRequest) {
         Account account = accountService.getAccount(operationRequest.getAccountCode());
         double amount = operationRequest.getAmount();
@@ -75,6 +77,7 @@ public class OperationService {
         return operationRepository.save(operation);
     }
 
+    @Override
     public Transfer transfer(OperationRequest operationRequest) {
         Account account = accountService.getAccount(operationRequest.getAccountCode());
         double amount = operationRequest.getAmount();
@@ -105,6 +108,7 @@ public class OperationService {
         return operationRepository.save(optransfer);
     }
 
+    @Override
     public List<Transfer> transferHistory(String accountCode) {
         return operationRepository.findByTypeAndAccount(TYPE, accountCode);
     }

@@ -1,7 +1,6 @@
 package amh.kata.bankaccount.RestControllers;
 
-import amh.kata.bankaccount.Services.IAccountService;
-import amh.kata.bankaccount.Services.OperationService;
+import amh.kata.bankaccount.Services.OperationServiceImpl;
 import amh.kata.bankaccount.entities.*;
 import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
 import amh.kata.bankaccount.entities.exceptions.AmountMinMaxValueException;
@@ -36,7 +35,7 @@ public class OperationRestControllerTest{
     private MockMvc mokMvc;
 
     @MockBean
-    private OperationService operationService;
+    private OperationServiceImpl operationService;
 
     @Autowired
     private ObjectMapper mapper;
