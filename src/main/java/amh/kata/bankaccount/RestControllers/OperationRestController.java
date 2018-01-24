@@ -2,8 +2,10 @@ package amh.kata.bankaccount.RestControllers;
 
 import amh.kata.bankaccount.Services.IOperationService;
 import amh.kata.bankaccount.Services.OperationServiceImpl;
+import amh.kata.bankaccount.entities.Deposit;
 import amh.kata.bankaccount.entities.Operation;
 import amh.kata.bankaccount.entities.Transfer;
+import amh.kata.bankaccount.entities.Withdrawal;
 import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
 import amh.kata.bankaccount.entities.exceptions.AmountLowerThanBalanceException;
 import amh.kata.bankaccount.entities.exceptions.AmountMinMaxValueException;
@@ -21,12 +23,12 @@ public class OperationRestController {
     private IOperationService operationService;
 
     @RequestMapping(value="/operations/deposit",method= RequestMethod.POST)
-    public Operation deposit(@RequestBody OperationRequest opRequest) {
+    public Deposit deposit(@RequestBody OperationRequest opRequest) {
         return operationService.deposit(opRequest);
     }
 
     @RequestMapping(value="/operations/withdrawal",method= RequestMethod.POST)
-    public Operation withdrawal(@RequestBody OperationRequest opRequest) {
+    public Withdrawal withdrawal(@RequestBody OperationRequest opRequest) {
         return operationService.withdrawal(opRequest);
     }
 

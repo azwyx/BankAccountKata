@@ -44,8 +44,8 @@ public class OperationServiceTest {
     private Client client;
     private Account account_1;
     private Account account_2;
-    private Operation opDeposit;
-    private Operation opWithdrawal;
+    private Deposit opDeposit;
+    private Withdrawal opWithdrawal;
     private Transfer opTransfer;
 
     @Before
@@ -79,7 +79,7 @@ public class OperationServiceTest {
         given(operationRepository.save(any(Operation.class))).willReturn(opDeposit);
 
         //logger.info("opDeposit avant ==>  " + opDeposit.getAmount() + " ** "+opDeposit.getAccount().getAccountCode() + " ** " + opDeposit.getAccount().getBalance());
-        Operation op_result = operationService.deposit(opRequest);
+        Deposit op_result = operationService.deposit(opRequest);
         //logger.info("opDeposit apres ==>  " + opDeposit.getAmount() + " ** "+opDeposit.getAccount().getAccountCode() + " ** " + opDeposit.getAccount().getBalance());
 
         assertThat(op_result.getAmount()).isEqualTo(800);
@@ -93,7 +93,7 @@ public class OperationServiceTest {
 
         given(accountService.getAccount(anyString())).willThrow(new AccountNotFoundException("Account Not Found"));
         //given(operationRepository.save(any(Operation.class))).willReturn(opDeposit);
-        Operation op_result = operationService.deposit(opRequest);
+        Deposit op_result = operationService.deposit(opRequest);
     }
 
     @Test(expected = AmountMinMaxValueException.class)
@@ -102,7 +102,7 @@ public class OperationServiceTest {
 
         given(accountService.getAccount(anyString())).willReturn(account_1);
 
-        operationService.deposit(opRequest);
+        Deposit op_result = operationService.deposit(opRequest);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class OperationServiceTest {
         given(operationRepository.save(any(Operation.class))).willReturn(opWithdrawal);
 
         //logger.info("opDeposit avant ==>  " + opDeposit.getAmount() + " ** "+opDeposit.getAccount().getAccountCode() + " ** " + opDeposit.getAccount().getBalance());
-        Operation op_result = operationService.withdrawal(opRequest);
+        Withdrawal op_result = operationService.withdrawal(opRequest);
         //logger.info("opDeposit apres ==>  " + opDeposit.getAmount() + " ** "+opDeposit.getAccount().getAccountCode() + " ** " + opDeposit.getAccount().getBalance());
 
         assertThat(op_result.getAmount()).isEqualTo(700);
@@ -127,7 +127,7 @@ public class OperationServiceTest {
 
         given(accountService.getAccount(anyString())).willThrow(new AccountNotFoundException("Account Not Found"));
 
-        Operation op_result = operationService.withdrawal(opRequest);
+        Withdrawal op_result = operationService.withdrawal(opRequest);
     }
 
     @Test(expected = AmountMinMaxValueException.class)
@@ -136,7 +136,7 @@ public class OperationServiceTest {
 
         given(accountService.getAccount(anyString())).willReturn(account_2);
 
-        Operation op_result = operationService.withdrawal(opRequest);
+        Withdrawal op_result = operationService.withdrawal(opRequest);
     }
 
     @Test(expected = AmountLowerThanBalanceException.class)
@@ -145,7 +145,7 @@ public class OperationServiceTest {
 
         given(accountService.getAccount(anyString())).willReturn(account_2);
 
-        Operation op_result = operationService.withdrawal(opRequest);
+        Withdrawal op_result = operationService.withdrawal(opRequest);
     }
 
     @Test

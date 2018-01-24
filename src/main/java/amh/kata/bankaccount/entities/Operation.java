@@ -1,45 +1,28 @@
 package amh.kata.bankaccount.entities;
 
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Operation implements Serializable {
 
+
+@Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType=DiscriminatorType.STRING, length=1)
+@Getter
+@Setter
+@NoArgsConstructor
+public class Operation implements Serializable {
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long opId;
     private double amount;
+    @CreationTimestamp
     private Date dateOperation;
+    @ManyToOne
+    @JoinColumn(name="ACCOUNT_CODE")
     private Account account;
-
-    public Operation() {
-        super();
-    }
-
-    public Long getOpId() {
-
-        return opId;
-    }
-
-    public Date getDateOperation() {
-        return dateOperation;
-    }
-
-    public void setDateOperation(Date dateOperation) {
-        this.dateOperation = dateOperation;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 }

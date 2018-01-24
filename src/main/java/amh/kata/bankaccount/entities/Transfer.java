@@ -1,13 +1,17 @@
 package amh.kata.bankaccount.entities;
 
-public class Transfer extends Operation {
-    private Account toAccount;
-    public Account getToAccount() {
-        return toAccount;
-    }
+import lombok.Getter;
+import lombok.Setter;
 
-    public void setToAccount(Account toAccount) {
-        this.toAccount = toAccount;
-    }
+import javax.persistence.*;
+
+@Entity
+@DiscriminatorValue("T")
+@Setter
+@Getter
+public class Transfer extends Operation {
+    @ManyToOne
+    @JoinColumn(name="TO_ACCOUNT_CODE")
+    private Account toAccount;
 
 }

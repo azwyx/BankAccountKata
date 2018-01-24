@@ -25,16 +25,16 @@ public class AccountServiceImpl implements IAccountService{
     public Account saveAccount(Account account) {
         if(accountRepository.findOne(account.getAccountCode()) != null)
                 throw new AccountAlreadyExistException("Account Already Exist");
-
-        return accountRepository.save(account);
+        Account saved = accountRepository.save(account);
+        return saved;
     }
 
     @Override
     public Account updateAccount(Account account) {
         if(accountRepository.findOne(account.getAccountCode()) == null)
             throw new AccountNotFoundException("Account Not Found");
-
-        return accountRepository.save(account);
+        Account saved = accountRepository.save(account);
+        return saved;
     }
 
     @Override

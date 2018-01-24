@@ -1,22 +1,21 @@
 package amh.kata.bankaccount.Services;
 
 import amh.kata.bankaccount.dao.OperationRepository;
-import amh.kata.bankaccount.entities.Account;
-import amh.kata.bankaccount.entities.Deposit;
-import amh.kata.bankaccount.entities.Operation;
-import amh.kata.bankaccount.entities.Transfer;
+import amh.kata.bankaccount.entities.*;
 import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
 import amh.kata.bankaccount.entities.exceptions.AmountLowerThanBalanceException;
 import amh.kata.bankaccount.entities.exceptions.AmountMinMaxValueException;
 import amh.kata.bankaccount.tools.OperationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
 @Service
+@Transactional
 public class OperationServiceImpl implements IOperationService{
 
     @Autowired
@@ -31,14 +30,14 @@ public class OperationServiceImpl implements IOperationService{
     private static final String TRANSFER_TYPE = "T";
 
     @Override
-    public Operation deposit(OperationRequest operationRequest) {
+    public Deposit deposit(OperationRequest operationRequest) {
         Account account = accountService.getAccount(operationRequest.getAccountCode());
         double amount = operationRequest.getAmount();
         if (amount <= MIN_VALUE || amount >= MAX_VALUE)
             throw new AmountMinMaxValueException("Please enter a valid amount");
 
         // if the amount is valid, let's do the operation
-        Operation operation = new Deposit();
+        Deposit operation = new Deposit();
         account.setBalance(account.getBalance() + amount);
 
         operation.setAmount(amount);
@@ -51,7 +50,7 @@ public class OperationServiceImpl implements IOperationService{
     }
 
     @Override
-    public Operation withdrawal(OperationRequest operationRequest) {
+    public Withdrawal withdrawal(OperationRequest operationRequest) {
         Account account = accountService.getAccount(operationRequest.getAccountCode());
         double amount = operationRequest.getAmount();
 
@@ -65,7 +64,7 @@ public class OperationServiceImpl implements IOperationService{
             throw new AmountLowerThanBalanceException("Please introduce an amount lower than your balance : <"  + account.getBalance());
 
         // if the amount is valid, let's do the operation
-        Operation operation = new Operation();
+        Withdrawal operation = new Withdrawal();
         account.setBalance(account.getBalance() - amount);
 
         operation.setAmount(amount);
@@ -110,7 +109,9 @@ public class OperationServiceImpl implements IOperationService{
 
     @Override
     public List<Transfer> transferHistory(String accountCode) {
-        return operationRepository.findByTypeAndAccount(TRANSFER_TYPE,
+        List<Transfer> list = operationRepository.findByTypeAndAccount(TRANSFER_TYPE,
                 accountService.getAccount(accountCode).getAccountCode());
+        System.out.println("** sizeList"+list.size());
+        return list;
     }
 }

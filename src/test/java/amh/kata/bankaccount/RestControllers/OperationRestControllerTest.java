@@ -43,13 +43,12 @@ public class OperationRestControllerTest{
 
     private static final double MIN_VALUE = 0;
     private static final double MAX_VALUE = 999999999;
-    private static final String TYPE = "T";
 
     private Client client;
     private Account account_1;
     private Account account_2;
-    private Operation opDeposit;
-    private Operation opWithdrawal;
+    private Deposit opDeposit;
+    private Withdrawal opWithdrawal;
     private Transfer opTransfer;
 
 
