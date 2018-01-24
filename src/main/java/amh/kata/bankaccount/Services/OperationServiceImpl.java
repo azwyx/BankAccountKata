@@ -2,7 +2,6 @@ package amh.kata.bankaccount.Services;
 
 import amh.kata.bankaccount.dao.OperationRepository;
 import amh.kata.bankaccount.entities.*;
-import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
 import amh.kata.bankaccount.entities.exceptions.AmountLowerThanBalanceException;
 import amh.kata.bankaccount.entities.exceptions.AmountMinMaxValueException;
 import amh.kata.bankaccount.tools.OperationRequest;
@@ -109,9 +108,7 @@ public class OperationServiceImpl implements IOperationService{
 
     @Override
     public List<Transfer> transferHistory(String accountCode) {
-        List<Transfer> list = operationRepository.findByTypeAndAccount(TRANSFER_TYPE,
+        return operationRepository.findByTypeAndAccount(TRANSFER_TYPE,
                 accountService.getAccount(accountCode).getAccountCode());
-        System.out.println("** sizeList"+list.size());
-        return list;
     }
 }

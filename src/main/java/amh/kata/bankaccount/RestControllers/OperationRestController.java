@@ -1,9 +1,7 @@
 package amh.kata.bankaccount.RestControllers;
 
 import amh.kata.bankaccount.Services.IOperationService;
-import amh.kata.bankaccount.Services.OperationServiceImpl;
 import amh.kata.bankaccount.entities.Deposit;
-import amh.kata.bankaccount.entities.Operation;
 import amh.kata.bankaccount.entities.Transfer;
 import amh.kata.bankaccount.entities.Withdrawal;
 import amh.kata.bankaccount.entities.exceptions.AccountNotFoundException;
