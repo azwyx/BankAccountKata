@@ -2,7 +2,6 @@ package com.kata.bankaccount;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,7 +19,6 @@ public class BankAccountApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... strings) throws Exception {
-		log.info("Hello ! Application started with command-line arguments: {} :)", Arrays.toString(strings));
+		log.info("Hello ! BankAccount Application started with command-line arguments: {} :)", Arrays.toString(strings));
 	}
-
 }
