@@ -34,10 +34,9 @@ public class BankAccountIntegrationTests {
         Client client_1 = new Client("HARIRI", "Amine", "azerty", "azertypass");
 
         HttpEntity<Client> request = new HttpEntity<Client>(client_1);
-        ResponseEntity<Client> response = restTemplate.exchange("/clients/saveClient", HttpMethod.POST, request, Client.class);
+        ResponseEntity<Client> response = restTemplate.exchange("/clients/save", HttpMethod.POST, request, Client.class);
 
         // assert
-
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getIdClient()).isNotNull();
         assertThat(response.getBody().getFirstname()).isEqualTo("HARIRI");
@@ -53,7 +52,7 @@ public class BankAccountIntegrationTests {
 
         // act
         HttpEntity<Client> request = new HttpEntity<Client>(client_2);
-        ResponseEntity<Client> response = restTemplate.exchange("/clients/saveClient", HttpMethod.POST, request, Client.class);
+        ResponseEntity<Client> response = restTemplate.exchange("/clients/save", HttpMethod.POST, request, Client.class);
 
         // assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -74,7 +73,7 @@ public class BankAccountIntegrationTests {
 
         // act
         HttpEntity<Account> request = new HttpEntity<Account>(account_1);
-        ResponseEntity<Account> response = restTemplate.exchange("/accounts/saveAccount", HttpMethod.POST, request, Account.class);
+        ResponseEntity<Account> response = restTemplate.exchange("/accounts/save", HttpMethod.POST, request, Account.class);
 
         // assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -94,7 +93,7 @@ public class BankAccountIntegrationTests {
 
         // act
         HttpEntity<Account> request = new HttpEntity<Account>(account_2);
-        ResponseEntity<Account> response = restTemplate.exchange("/accounts/saveAccount", HttpMethod.POST, request, Account.class);
+        ResponseEntity<Account> response = restTemplate.exchange("/accounts/save", HttpMethod.POST, request, Account.class);
 
         // assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -189,7 +188,7 @@ public class BankAccountIntegrationTests {
     @Test
     public void step8_shouldGetTransferHistoryForAllAccount1Transfers() throws Exception {
         // act
-        ResponseEntity<Transfer[]> response = restTemplate.getForEntity("/operations/transferHistory/account_1", Transfer[].class);
+        ResponseEntity<Transfer[]> response = restTemplate.getForEntity("/operations/transfers/history/account_1", Transfer[].class);
 
         // assert
         Transfer[] transfers = response.getBody();

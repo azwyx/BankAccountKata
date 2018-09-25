@@ -1,9 +1,9 @@
 package com.kata.bankaccount.services;
 
 import com.kata.bankaccount.dao.OperationRepository;
-import com.kata.bankaccount.entities.exceptions.AccountNotFoundException;
-import com.kata.bankaccount.entities.exceptions.AmountLowerThanBalanceException;
-import com.kata.bankaccount.entities.exceptions.AmountMinMaxValueException;
+import com.kata.bankaccount.services.exceptions.AccountNotFoundException;
+import com.kata.bankaccount.services.exceptions.AmountLowerThanBalanceException;
+import com.kata.bankaccount.services.exceptions.AmountMinMaxValueException;
 import com.kata.bankaccount.tools.OperationRequest;
 import com.kata.bankaccount.entities.*;
 import org.junit.Before;

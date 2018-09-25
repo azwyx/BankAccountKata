@@ -2,9 +2,8 @@ package com.kata.bankaccount.restcontrollers;
 
 import com.kata.bankaccount.services.IClientService;
 import com.kata.bankaccount.entities.Client;
-import com.kata.bankaccount.entities.exceptions.ClientNotFoundException;
+import com.kata.bankaccount.services.exceptions.ClientNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class ClientRestController {
     @Autowired
     private IClientService clientService;
 
-    @RequestMapping(value="/saveClient",  method= RequestMethod.POST)
+    @RequestMapping(value="/save",  method= RequestMethod.POST)
     public Client saveClient(@RequestBody Client c) {
         return clientService.saveClient(c);
     }
@@ -32,8 +31,8 @@ public class ClientRestController {
         return "Client by Id "+idClient+" is successfully deleted";
     }
 
-    @RequestMapping(value="/list",method=RequestMethod.GET)
-    public List<Client> listClient() {
+    @RequestMapping(value="/all",method=RequestMethod.GET)
+    public List<Client> allClients() {
         return clientService.listClient();
     }
 }

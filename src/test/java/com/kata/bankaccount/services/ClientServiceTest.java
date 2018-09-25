@@ -2,7 +2,7 @@ package com.kata.bankaccount.services;
 
 import com.kata.bankaccount.dao.ClientRepository;
 import com.kata.bankaccount.entities.Client;
-import com.kata.bankaccount.entities.exceptions.ClientNotFoundException;
+import com.kata.bankaccount.services.exceptions.ClientNotFoundException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,8 +1,8 @@
 package com.kata.bankaccount.services;
 
 import com.kata.bankaccount.dao.OperationRepository;
-import com.kata.bankaccount.entities.exceptions.AmountLowerThanBalanceException;
-import com.kata.bankaccount.entities.exceptions.AmountMinMaxValueException;
+import com.kata.bankaccount.services.exceptions.AmountLowerThanBalanceException;
+import com.kata.bankaccount.services.exceptions.AmountMinMaxValueException;
 import com.kata.bankaccount.tools.OperationRequest;
 import com.kata.bankaccount.entities.Account;
 import com.kata.bankaccount.entities.Deposit;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
+
 
 @Service
 @Transactional

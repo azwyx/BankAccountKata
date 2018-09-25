@@ -1,8 +1,8 @@
 package com.kata.bankaccount.restcontrollers;
 
 import com.kata.bankaccount.services.IOperationService;
-import com.kata.bankaccount.entities.exceptions.AccountNotFoundException;
-import com.kata.bankaccount.entities.exceptions.AmountMinMaxValueException;
+import com.kata.bankaccount.services.exceptions.AccountNotFoundException;
+import com.kata.bankaccount.services.exceptions.AmountMinMaxValueException;
 import com.kata.bankaccount.tools.OperationRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kata.bankaccount.entities.*;
@@ -257,7 +257,7 @@ public class OperationRestControllerTest{
 
         given(operationService.transferHistory(anyString())).willReturn(opTransferList);
 
-        mokMvc.perform(MockMvcRequestBuilders.get("/operations/transferHistory/{accountCode}", "account_1"))
+        mokMvc.perform(MockMvcRequestBuilders.get("/operations/transfers/history/{accountCode}", "account_1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", Matchers.hasSize(2)))
                 .andExpect(jsonPath("$.[0].account.accountCode").value("account_1"))
@@ -276,7 +276,7 @@ public class OperationRestControllerTest{
     public void TransferHistory_ShouldReturnAccountNotFoundException() throws Exception {
         given(operationService.transferHistory(anyString())).willThrow(new AccountNotFoundException());
 
-        mokMvc.perform(MockMvcRequestBuilders.get("/operations/transferHistory/{accountCode}", "account_1"))
+        mokMvc.perform(MockMvcRequestBuilders.get("/operations/transfers/history/{accountCode}", "account_1"))
                 .andExpect(status().isNotFound());
     }
 

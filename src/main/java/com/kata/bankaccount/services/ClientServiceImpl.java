@@ -2,7 +2,7 @@ package com.kata.bankaccount.services;
 
 import com.kata.bankaccount.dao.ClientRepository;
 import com.kata.bankaccount.entities.Client;
-import com.kata.bankaccount.entities.exceptions.ClientNotFoundException;
+import com.kata.bankaccount.services.exceptions.ClientNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

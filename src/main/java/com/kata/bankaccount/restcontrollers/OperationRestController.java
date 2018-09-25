@@ -4,12 +4,8 @@ import com.kata.bankaccount.services.IOperationService;
 import com.kata.bankaccount.entities.Deposit;
 import com.kata.bankaccount.entities.Transfer;
 import com.kata.bankaccount.entities.Withdrawal;
-import com.kata.bankaccount.entities.exceptions.AccountNotFoundException;
-import com.kata.bankaccount.entities.exceptions.AmountLowerThanBalanceException;
-import com.kata.bankaccount.entities.exceptions.AmountMinMaxValueException;
 import com.kata.bankaccount.tools.OperationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,7 +32,7 @@ public class OperationRestController {
         return operationService.transfer(opRequest);
     }
 
-    @RequestMapping(value="/transferHistory/{accountCode}",method= RequestMethod.GET)
+    @RequestMapping(value="/transfers/history/{accountCode}",method= RequestMethod.GET)
     public List<Transfer> transferHistory(@PathVariable String accountCode) {
         return operationService.transferHistory(accountCode);
     }

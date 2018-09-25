@@ -3,9 +3,9 @@ package com.kata.bankaccount.restcontrollers;
 import com.kata.bankaccount.services.IAccountService;
 import com.kata.bankaccount.entities.Account;
 import com.kata.bankaccount.entities.Client;
-import com.kata.bankaccount.entities.exceptions.AccountAlreadyExistException;
-import com.kata.bankaccount.entities.exceptions.AccountNotFoundException;
-import com.kata.bankaccount.entities.exceptions.ClientNotFoundException;
+import com.kata.bankaccount.services.exceptions.AccountAlreadyExistException;
+import com.kata.bankaccount.services.exceptions.AccountNotFoundException;
+import com.kata.bankaccount.services.exceptions.ClientNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -66,7 +66,7 @@ public class AccountRestControllerTest {
 
         given(accountService.saveAccount(anyObject())).willReturn(account_1);
 
-        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/saveAccount")
+        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/save")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
                 .accept(MediaType.APPLICATION_JSON))
@@ -81,7 +81,7 @@ public class AccountRestControllerTest {
         String json = mapper.writeValueAsString(account_1);
         given(accountService.saveAccount(anyObject())).willThrow(new AccountAlreadyExistException());
 
-        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/saveAccount")
+        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/save")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
                 .accept(MediaType.APPLICATION_JSON))
@@ -94,7 +94,7 @@ public class AccountRestControllerTest {
 
         given(accountService.saveAccount(anyObject())).willReturn(account_1);
 
-        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/updateAccount")
+        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/update")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
                 .accept(MediaType.APPLICATION_JSON))
@@ -109,7 +109,7 @@ public class AccountRestControllerTest {
         String json = mapper.writeValueAsString(account_1);
         given(accountService.saveAccount(anyObject())).willThrow(new AccountNotFoundException());
 
-        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/updateAccount")
+        mokMvc.perform(MockMvcRequestBuilders.post("/accounts/update")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
                 .accept(MediaType.APPLICATION_JSON))
@@ -121,7 +121,7 @@ public class AccountRestControllerTest {
     public void getAccountDetails_TestSuccess_ShouldReturnAccount() throws Exception {
         given(accountService.getAccount(anyString())).willReturn(account_1);
 
-        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/accountDetails/{accountCode}", "account_1"))
+        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/details/{accountCode}", "account_1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("accountCode").value("account_1"))
                 .andExpect(jsonPath("client.firstname").value("HARIRI"));
@@ -131,7 +131,7 @@ public class AccountRestControllerTest {
     public void getAccountDetails_TestFail_ShouldReturnNotFoundException() throws Exception {
         given(accountService.getAccount(anyString())).willThrow(new AccountNotFoundException());
 
-        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/accountDetails/{accountCode}", "account_1"))
+        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/details/{accountCode}", "account_1"))
                 .andExpect(status().isNotFound());
 
     }
@@ -141,7 +141,7 @@ public class AccountRestControllerTest {
 
         given(accountService.getClientAccounts(anyLong())).willReturn(account_list);
 
-        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/clientAccounts/{idClient}", 1))
+        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/client/{idClient}", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].accountCode").value(account_list.get(0).getAccountCode()))
                 .andExpect(jsonPath("$.[0].client.firstname").value(account_list.get(0).getClient().getFirstname()))
@@ -153,7 +153,7 @@ public class AccountRestControllerTest {
     public void getClientAccounts_Test_ShouldReturnException() throws Exception {
         given(accountService.getClientAccounts(anyLong())).willThrow(new AccountNotFoundException());
 
-        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/clientAccounts/{idClient}", 6))
+        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/client/{idClient}", 6))
                 .andExpect(status().isNotFound());
     }
     // voir list des compte echoue car le client n'existe pas
@@ -161,7 +161,7 @@ public class AccountRestControllerTest {
     public void getClientAccounts_TestFail_ShouldReturnClientNotFoundException() throws Exception {
         given(accountService.getClientAccounts(anyLong())).willThrow(new ClientNotFoundException());
 
-        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/clientAccounts/{idClient}", 7))
+        mokMvc.perform(MockMvcRequestBuilders.get("/accounts/client/{idClient}", 7))
                 .andExpect(status().isNotFound());
     }
 

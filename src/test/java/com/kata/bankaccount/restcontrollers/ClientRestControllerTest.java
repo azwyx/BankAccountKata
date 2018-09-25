@@ -2,7 +2,7 @@ package com.kata.bankaccount.restcontrollers;
 
 import com.kata.bankaccount.services.IClientService;
 import com.kata.bankaccount.entities.Client;
-import com.kata.bankaccount.entities.exceptions.ClientNotFoundException;
+import com.kata.bankaccount.services.exceptions.ClientNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class ClientRestControllerTest {
 
         given(clientService.saveClient(anyObject())).willReturn(new Client("Amine", "HARIRI", "azerty", "azertypass"));
 
-        mokMvc.perform(MockMvcRequestBuilders.post("/clients/saveClient")
+        mokMvc.perform(MockMvcRequestBuilders.post("/clients/save")
         .contentType(MediaType.APPLICATION_JSON)
         .content(json)
         .accept(MediaType.APPLICATION_JSON))
@@ -111,7 +111,7 @@ public class ClientRestControllerTest {
 
         given(clientService.listClient()).willReturn(client_list);
 
-        mokMvc.perform(MockMvcRequestBuilders.get("/clients/list"))
+        mokMvc.perform(MockMvcRequestBuilders.get("/clients/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", Matchers.hasSize(2)));
     }
